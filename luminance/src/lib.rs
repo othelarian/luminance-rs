@@ -394,6 +394,7 @@
 //! [luminance-glfw]: https://crates.io/crates/luminance-glfw
 
 #![deny(missing_docs)]
+#![cfg_attr(feature = "webgl", allow(unused_parens, non_camel_case_types))]
 
 #![cfg_attr(not(feature = "std"), no_std)]
 #![cfg_attr(not(feature = "std"), feature(alloc))]
@@ -415,3 +416,23 @@ pub mod tess;
 pub mod texture;
 pub mod vertex;
 pub mod vertex_restart;
+
+// test for webgl
+
+#[cfg(feature = "webgl")]
+#[macro_use]
+extern crate serde_derive;
+
+#[cfg(feature = "webgl")]
+#[macro_use]
+extern crate stdweb;
+
+#[cfg(feature = "webgl")]
+#[macro_use]
+extern crate stdweb_derive;
+
+#[cfg(feature = "webgl")]
+pub mod webgl {
+  #![allow(missing_docs)]
+  include!(concat!(env!("OUT_DIR"), "/webgl_stdweb.rs"));
+}
