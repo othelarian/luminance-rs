@@ -406,7 +406,7 @@ pub mod depth_test;
 pub mod face_culling;
 pub mod framebuffer;
 pub mod linear;
-mod metagl;
+mod gl;
 pub mod pipeline;
 pub mod pixel;
 pub mod render_state;

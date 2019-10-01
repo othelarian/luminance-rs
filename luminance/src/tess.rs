@@ -72,7 +72,7 @@ use core::ptr;
 
 use crate::buffer::{Buffer, BufferError, BufferSlice, BufferSliceMut, RawBuffer};
 use crate::context::GraphicsContext;
-use crate::metagl::*;
+use crate::gl::*;
 use crate::state::{Bind, GraphicsState};
 use crate::vertex::{
   Normalized, VertexBufferDesc, Vertex, VertexAttribDim, VertexAttribDesc, VertexAttribType,

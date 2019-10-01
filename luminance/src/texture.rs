@@ -110,7 +110,7 @@ use core::ptr;
 
 use crate::context::GraphicsContext;
 pub use crate::depth_test::DepthComparison;
-use crate::metagl::*;
+use crate::gl::*;
 use crate::pixel::{opengl_pixel_format, Pixel, PixelFormat};
 use crate::state::GraphicsState;
 

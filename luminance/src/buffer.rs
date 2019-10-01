@@ -130,7 +130,7 @@ use core::slice;
 
 use crate::context::GraphicsContext;
 use crate::linear::{M22, M33, M44};
-use crate::metagl::*;
+use crate::gl::*;
 use crate::state::{Bind, GraphicsState};
 
 /// Buffer errors.

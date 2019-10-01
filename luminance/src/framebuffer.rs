@@ -43,7 +43,7 @@ use core::fmt;
 use core::marker::PhantomData;
 
 use crate::context::GraphicsContext;
-use crate::metagl::*;
+use crate::gl::*;
 use crate::pixel::{ColorPixel, DepthPixel, PixelFormat, RenderablePixel};
 use crate::state::{Bind, GraphicsState};
 use crate::texture::{

@@ -18,7 +18,7 @@ maintenance = { status = "actively-developed" }
 [features]
 default = ["std", "gl"]
 std = ["gl"]
-webgl = ["serde", "serde_derive", "stdweb", "stdweb-derive", "webgl_generator"]
+web = ["serde", "serde_derive", "stdweb", "stdweb-derive", "webgl_generator"]
 
 [dependencies]
 gl = { version = "0.13", optional = true }

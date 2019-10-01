@@ -17,7 +17,7 @@ use core::marker::PhantomData;
 use crate::blending::{BlendingState, Equation, Factor};
 use crate::depth_test::{DepthComparison, DepthTest};
 use crate::face_culling::{FaceCullingMode, FaceCullingOrder, FaceCullingState};
-use crate::metagl::*;
+use crate::gl::*;
 use crate::vertex_restart::VertexRestart;
 
 // TLS synchronization barrier for `GraphicsState`.

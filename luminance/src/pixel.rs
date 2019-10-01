@@ -3,7 +3,7 @@
 //! The `Pixel` trait is used to reify a pixel type at runtime via `PixelFormat`.
 //!
 
-use crate::metagl::*;
+use crate::gl::*;
 
 /// Reify a static pixel format at runtime.
 pub unsafe trait Pixel {

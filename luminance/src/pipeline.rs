@@ -121,7 +121,7 @@ use crate::context::GraphicsContext;
 use crate::depth_test::DepthTest;
 use crate::face_culling::FaceCullingState;
 use crate::framebuffer::{ColorSlot, DepthSlot, Framebuffer};
-use crate::metagl::*;
+use crate::gl::*;
 use crate::pixel::{Pixel, SamplerType, Type as PxType};
 use crate::render_state::RenderState;
 use crate::shader::program::{Program, ProgramInterface, Type, Uniform, UniformInterface, Uniformable};

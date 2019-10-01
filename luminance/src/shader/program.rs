@@ -55,7 +55,7 @@ use core::ops::Deref;
 use core::ptr::null_mut;
 
 use crate::linear::{M22, M33, M44};
-use crate::metagl::*;
+use crate::gl::*;
 use crate::shader::stage::{self, Stage, StageError};
 use crate::vertex::Semantics;
 
