@@ -3,13 +3,13 @@
 //! This module provides OpenGL types and functions that are used to implement the rest of this
 //! crate.
 
-#[cfg(feature = "std")]
+#[cfg(all(feature = "std", not(feature = "web")))]
 mod meta {
   pub(crate) use gl;
   pub(crate) use gl::types::*;
 }
 
-#[cfg(not(feature = "std"))]
+#[cfg(all(not(feature = "std"), not(feature = "web")))]
 mod meta {
   use alloc::vec::Vec;
 
@@ -771,6 +771,11 @@ mod meta {
       pub fn Viewport(_: GLint, _: GLint, _: GLsizei, _: GLsizei);
     }
   }
+}
+
+#[cfg(feature = "web")]
+mod meta {
+  pub(crate) use crate::webgl::*;
 }
 
 pub(crate) use self::meta::*;
