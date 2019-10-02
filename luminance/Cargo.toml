@@ -17,7 +17,7 @@ maintenance = { status = "actively-developed" }
 
 [features]
 default = ["std", "gl"]
-std = ["gl"]
+std = []
 web = ["serde", "serde_derive", "stdweb", "stdweb-derive", "wasm-bindgen", "webgl_generator"]
 
 [dependencies]
