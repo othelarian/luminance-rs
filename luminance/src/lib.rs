@@ -414,9 +414,4 @@ extern crate stdweb;
 extern crate stdweb_derive;
 
 #[cfg(feature = "web")]
-pub mod webgl {
-  #![cfg_attr(feature = "web", allow(unused_parens, non_camel_case_types))]
-  #![allow(missing_docs)]
-
-  include!(concat!(env!("OUT_DIR"), "/webgl_stdweb.rs"));
-}
+pub mod webgl;

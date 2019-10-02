@@ -34,6 +34,7 @@ pub enum DepthComparison {
 }
 
 impl DepthComparison {
+  #[cfg(feature = "gl")]
   pub(crate) fn to_glenum(self) -> GLenum {
     match self {
       DepthComparison::Never => gl::NEVER,
