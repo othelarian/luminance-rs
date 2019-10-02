@@ -3,13 +3,13 @@
 //! This module provides OpenGL types and functions that are used to implement the rest of this
 //! crate.
 
-#[cfg(all(feature = "std", not(feature = "web")))]
+#[cfg(feature = "std")]
 mod meta {
   pub(crate) use gl;
   pub(crate) use gl::types::*;
 }
 
-#[cfg(all(not(feature = "std"), not(feature = "web")))]
+#[cfg(not(feature = "std"))]
 mod meta {
   use alloc::vec::Vec;
 
@@ -773,9 +773,21 @@ mod meta {
   }
 }
 
-#[cfg(feature = "web")]
-mod meta {
-  pub(crate) use crate::webgl::*;
-}
+pub mod blending;
+pub mod buffer;
+pub mod context;
+pub mod depth_test;
+pub mod face_culling;
+pub mod framebuffer;
+pub mod linear;
+pub mod pipeline;
+pub mod pixel;
+pub mod render_state;
+pub mod shader;
+pub mod state;
+pub mod tess;
+pub mod texture;
+pub mod vertex;
+pub mod vertex_restart;
 
 pub(crate) use self::meta::*;

@@ -277,8 +277,8 @@ macro_rules! impl_vertex_attribute {
       const VERTEX_ATTRIB_DESC: VertexAttribDesc = VertexAttribDesc {
         ty: $attr_ty,
         dim: $dim,
-        unit_size: $crate::vertex::size_of::<$q>(),
-        align: $crate::vertex::align_of::<$q>(),
+        unit_size: $crate::gl::vertex::size_of::<$q>(),
+        align: $crate::gl::vertex::align_of::<$q>(),
       };
     }
   };

@@ -115,20 +115,20 @@ use core::marker::PhantomData;
 #[cfg(not(feature = "std"))]
 use core::ops::Deref;
 
-use crate::blending::BlendingState;
-use crate::buffer::{Buffer, RawBuffer};
-use crate::context::GraphicsContext;
-use crate::depth_test::DepthTest;
-use crate::face_culling::FaceCullingState;
-use crate::framebuffer::{ColorSlot, DepthSlot, Framebuffer};
 use crate::gl::*;
-use crate::pixel::{Pixel, SamplerType, Type as PxType};
-use crate::render_state::RenderState;
-use crate::shader::program::{Program, ProgramInterface, Type, Uniform, UniformInterface, Uniformable};
-use crate::state::GraphicsState;
-use crate::tess::TessSlice;
-use crate::texture::{Dim, Dimensionable, Layerable, Texture};
-use crate::vertex::Semantics;
+use crate::gl::blending::BlendingState;
+use crate::gl::buffer::{Buffer, RawBuffer};
+use crate::gl::context::GraphicsContext;
+use crate::gl::depth_test::DepthTest;
+use crate::gl::face_culling::FaceCullingState;
+use crate::gl::framebuffer::{ColorSlot, DepthSlot, Framebuffer};
+use crate::gl::pixel::{Pixel, SamplerType, Type as PxType};
+use crate::gl::render_state::RenderState;
+use crate::gl::shader::program::{Program, ProgramInterface, Type, Uniform, UniformInterface, Uniformable};
+use crate::gl::state::GraphicsState;
+use crate::gl::tess::TessSlice;
+use crate::gl::texture::{Dim, Dimensionable, Layerable, Texture};
+use crate::gl::vertex::Semantics;
 
 // A stack of bindings.
 //

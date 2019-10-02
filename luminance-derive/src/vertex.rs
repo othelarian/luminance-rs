@@ -1,8 +1,9 @@
-use crate::attrib::{AttrError, get_field_attr_once};
 use proc_macro::TokenStream;
 use quote::{format_ident, quote};
 use std::fmt;
 use syn::{Attribute, DataStruct, Field, Fields, Ident, LitBool, Type};
+
+use crate::attrib::{AttrError, get_field_attr_once};
 
 // accepted sub keys for the "vertex" key
 const KNOWN_SUBKEYS: &[&str] = &["sem", "instanced", "normalized"];
@@ -120,14 +121,14 @@ where FN: Into<Option<&'a mut Vec<Ident>>> {
 
   let field_ty = &field.ty;
   let vertex_attrib_desc = if normalized {
-    quote!{ (<#field_ty as luminance::vertex::VertexAttrib>::VERTEX_ATTRIB_DESC).normalize() }
+    quote!{ (<#field_ty as luminance::gl::vertex::VertexAttrib>::VERTEX_ATTRIB_DESC).normalize() }
   } else {
-    quote!{ <#field_ty as luminance::vertex::VertexAttrib>::VERTEX_ATTRIB_DESC }
+    quote!{ <#field_ty as luminance::gl::vertex::VertexAttrib>::VERTEX_ATTRIB_DESC }
   };
 
   let indexed_vertex_attrib_desc_q = quote!{
-    luminance::vertex::VertexBufferDesc::new::<#sem_type>(
-      <#field_ty as luminance::vertex::HasSemantics>::SEMANTICS,
+    luminance::gl::vertex::VertexBufferDesc::new::<#sem_type>(
+      <#field_ty as luminance::gl::vertex::HasSemantics>::SEMANTICS,
       #instancing,
       #vertex_attrib_desc,
     )
@@ -175,8 +176,8 @@ fn process_struct(
 
   quote! {
     // Vertex impl
-    unsafe impl luminance::vertex::Vertex for #struct_name {
-      fn vertex_desc() -> luminance::vertex::VertexDesc {
+    unsafe impl luminance::gl::vertex::Vertex for #struct_name {
+      fn vertex_desc() -> luminance::gl::vertex::VertexDesc {
         vec![#(#indexed_vertex_attrib_descs),*]
       }
     }
@@ -200,13 +201,13 @@ where A: IntoIterator<Item = &'a Attribute> {
     KNOWN_SUBKEYS
   ).map(|b: LitBool| {
       if b.value {
-        quote! { luminance::vertex::VertexInstancing::On }
+        quote! { luminance::gl::vertex::VertexInstancing::On }
       } else {
-        quote! { luminance::vertex::VertexInstancing::Off }
+        quote! { luminance::gl::vertex::VertexInstancing::Off }
       }
   }).or_else(|e| match e {
     AttrError::CannotFindAttribute(..) => {
-      Ok(quote! { luminance::vertex::VertexInstancing::Off })
+      Ok(quote! { luminance::gl::vertex::VertexInstancing::Off })
     }
 
     _ => Err(e)

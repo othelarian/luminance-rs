@@ -1,4 +1,4 @@
-use luminance::vertex::{
+use luminance::gl::vertex::{
   HasSemantics, Semantics, Vertex, VertexAttrib, VertexBufferDesc, VertexInstancing
 };
 use luminance_derive::{Semantics, Vertex};

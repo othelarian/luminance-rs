@@ -42,11 +42,11 @@ use core::fmt;
 #[cfg(not(feature = "std"))]
 use core::marker::PhantomData;
 
-use crate::context::GraphicsContext;
 use crate::gl::*;
-use crate::pixel::{ColorPixel, DepthPixel, PixelFormat, RenderablePixel};
-use crate::state::{Bind, GraphicsState};
-use crate::texture::{
+use crate::gl::context::GraphicsContext;
+use crate::gl::pixel::{ColorPixel, DepthPixel, PixelFormat, RenderablePixel};
+use crate::gl::state::{Bind, GraphicsState};
+use crate::gl::texture::{
   create_texture, opengl_target, Dim2, Dimensionable, Flat, Layerable, RawTexture, Texture,
   TextureError,
 };

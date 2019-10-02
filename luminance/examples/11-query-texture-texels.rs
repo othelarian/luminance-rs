@@ -9,13 +9,13 @@ mod common;
 
 use common::{Semantics, Vertex, VertexColor, VertexPosition};
 use image::{ColorType, save_buffer};
-use luminance::context::GraphicsContext as _;
-use luminance::framebuffer::Framebuffer;
-use luminance::render_state::RenderState;
-use luminance::shader::program::Program;
-use luminance::tess::{Mode, TessBuilder};
-use luminance::texture::{Flat, Dim2};
-use luminance::pixel::NormRGBA8UI;
+use luminance::gl::context::GraphicsContext as _;
+use luminance::gl::framebuffer::Framebuffer;
+use luminance::gl::render_state::RenderState;
+use luminance::gl::shader::program::Program;
+use luminance::gl::tess::{Mode, TessBuilder};
+use luminance::gl::texture::{Flat, Dim2};
+use luminance::gl::pixel::NormRGBA8UI;
 use luminance_derive::Vertex;
 use luminance_glfw::{Action, GlfwSurface, Key, Surface, WindowEvent, WindowDim, WindowOpt};
 

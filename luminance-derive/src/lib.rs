@@ -34,11 +34,12 @@ mod semantics;
 mod uniform_interface;
 mod vertex;
 
+use proc_macro::TokenStream;
+use syn::{self, Data, DeriveInput, parse_macro_input};
+
 use crate::semantics::generate_enum_semantics_impl;
 use crate::uniform_interface::generate_uniform_interface_impl;
 use crate::vertex::generate_vertex_impl;
-use proc_macro::TokenStream;
-use syn::{self, Data, DeriveInput, parse_macro_input};
 
 /// The [`Vertex`] derive proc-macro.
 ///
@@ -154,7 +155,7 @@ pub fn derive_semantics(input: TokenStream) -> TokenStream {
 /// The procedural macro is very simple to use. You declare a struct as you would normally do:
 ///
 /// ```
-/// # use luminance::shader::program::Uniform;
+/// # use luminance::gl::shader::program::Uniform;
 /// # use luminance_derive::UniformInterface;
 ///
 /// #[derive(Debug, UniformInterface)]
@@ -175,7 +176,7 @@ pub fn derive_semantics(input: TokenStream) -> TokenStream {
 /// attribute:
 ///
 /// ```
-/// # use luminance::shader::program::Uniform;
+/// # use luminance::gl::shader::program::Uniform;
 /// # use luminance_derive::UniformInterface;
 ///
 /// #[derive(Debug, UniformInterface)]
@@ -191,7 +192,7 @@ pub fn derive_semantics(input: TokenStream) -> TokenStream {
 /// to be complete:
 ///
 /// ```
-/// # use luminance::shader::program::Uniform;
+/// # use luminance::gl::shader::program::Uniform;
 /// # use luminance_derive::UniformInterface;
 ///
 /// #[derive(Debug, UniformInterface)]
@@ -206,7 +207,7 @@ pub fn derive_semantics(input: TokenStream) -> TokenStream {
 /// uniform if it cannot be mapped:
 ///
 /// ```
-/// # use luminance::shader::program::Uniform;
+/// # use luminance::gl::shader::program::Uniform;
 /// # use luminance_derive::UniformInterface;
 ///
 /// #[derive(Debug, UniformInterface)]

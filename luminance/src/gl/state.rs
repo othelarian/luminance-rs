@@ -14,11 +14,11 @@ use core::fmt;
 #[cfg(not(feature = "std"))]
 use core::marker::PhantomData;
 
-use crate::blending::{BlendingState, Equation, Factor};
-use crate::depth_test::{DepthComparison, DepthTest};
-use crate::face_culling::{FaceCullingMode, FaceCullingOrder, FaceCullingState};
 use crate::gl::*;
-use crate::vertex_restart::VertexRestart;
+use crate::gl::blending::{BlendingState, Equation, Factor};
+use crate::gl::depth_test::{DepthComparison, DepthTest};
+use crate::gl::face_culling::{FaceCullingMode, FaceCullingOrder, FaceCullingState};
+use crate::gl::vertex_restart::VertexRestart;
 
 // TLS synchronization barrier for `GraphicsState`.
 //

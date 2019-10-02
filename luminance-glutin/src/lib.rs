@@ -18,8 +18,8 @@ use glutin::{
   WindowBuilder, WindowedContext
 };
 use glutin::dpi::PhysicalSize;
-use luminance::context::GraphicsContext;
-use luminance::state::{GraphicsState, StateQueryError};
+use luminance::gl::context::GraphicsContext;
+use luminance::gl::state::{GraphicsState, StateQueryError};
 use std::cell::RefCell;
 use std::os::raw::c_void;
 use std::rc::Rc;

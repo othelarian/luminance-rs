@@ -1,8 +1,9 @@
-use crate::attrib::{AttrError, get_field_attr_once};
 use proc_macro::TokenStream;
 use quote::quote;
 use std::fmt;
 use syn::{Attribute, DataEnum, Ident, Type};
+
+use crate::attrib::{AttrError, get_field_attr_once};
 
 const KNOWN_SUBKEYS: &[&str] = &["name", "repr", "wrapper"];
 
@@ -81,7 +82,7 @@ pub(crate) fn generate_enum_semantics_impl(
         });
 
         semantics_set.push(quote!{
-          luminance::vertex::SemanticsDesc {
+          luminance::gl::vertex::SemanticsDesc {
             index: #index,
             name: #sem_name.to_owned()
           }
@@ -112,16 +113,16 @@ pub(crate) fn generate_enum_semantics_impl(
           }
 
           // get the associated semantics
-          impl luminance::vertex::HasSemantics for #ty_name {
+          impl luminance::gl::vertex::HasSemantics for #ty_name {
             type Sem = #ident;
 
             const SEMANTICS: Self::Sem = #ident::#sem_var;
           }
 
           // make the vertex attrib impl VertexAttrib by forwarding implementation to the repr type
-          unsafe impl luminance::vertex::VertexAttrib for #ty_name {
-            const VERTEX_ATTRIB_DESC: luminance::vertex::VertexAttribDesc =
-              <#repr_ty_name as luminance::vertex::VertexAttrib>::VERTEX_ATTRIB_DESC;
+          unsafe impl luminance::gl::vertex::VertexAttrib for #ty_name {
+            const VERTEX_ATTRIB_DESC: luminance::gl::vertex::VertexAttribDesc =
+              <#repr_ty_name as luminance::gl::vertex::VertexAttrib>::VERTEX_ATTRIB_DESC;
           }
         };
 
@@ -142,7 +143,7 @@ pub(crate) fn generate_enum_semantics_impl(
 
   // output generation
   let output_gen = quote!{
-    impl luminance::vertex::Semantics for #ident {
+    impl luminance::gl::vertex::Semantics for #ident {
       fn index(&self) -> usize {
         *self as usize
       }
@@ -153,7 +154,7 @@ pub(crate) fn generate_enum_semantics_impl(
         }
       }
 
-      fn semantics_set() -> Vec<luminance::vertex::SemanticsDesc> {
+      fn semantics_set() -> Vec<luminance::gl::vertex::SemanticsDesc> {
         vec![#(#semantics_set,)*]
       }
     }

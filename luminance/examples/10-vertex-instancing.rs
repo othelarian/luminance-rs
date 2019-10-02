@@ -9,10 +9,10 @@ mod common;
 use crate::common::{
   Instance, Semantics, Vertex, VertexPosition, VertexColor, VertexInstancePosition, VertexWeight
 };
-use luminance::context::GraphicsContext;
-use luminance::render_state::RenderState;
-use luminance::shader::program::Program;
-use luminance::tess::{Mode, TessBuilder};
+use luminance::gl::context::GraphicsContext;
+use luminance::gl::render_state::RenderState;
+use luminance::gl::shader::program::Program;
+use luminance::gl::tess::{Mode, TessBuilder};
 use luminance_glfw::{Action, GlfwSurface, Key, Surface, WindowEvent, WindowDim, WindowOpt};
 use std::time::Instant;
 

@@ -1,8 +1,9 @@
-use crate::attrib::{AttrError, get_field_attr_once, get_field_flag_once};
 use proc_macro::TokenStream;
 use quote::quote;
 use std::fmt;
 use syn::{DataStruct, Fields, Ident};
+
+use crate::attrib::{AttrError, get_field_attr_once, get_field_flag_once};
 
 // accepted sub keys for the "vertex" key
 const KNOWN_SUBKEYS: &[&str] = &["name", "unbound"];
@@ -71,7 +72,7 @@ pub(crate) fn generate_uniform_interface_impl(
           }
         } else {
           quote!{
-            builder.ask(#name).map_err(luminance::shader::program::ProgramError::UniformWarning)?
+            builder.ask(#name).map_err(luminance::gl::shader::program::ProgramError::UniformWarning)?
           }
         };
 
@@ -82,11 +83,11 @@ pub(crate) fn generate_uniform_interface_impl(
       }
 
       let output = quote!{
-        impl luminance::shader::program::UniformInterface for #ident {
+        impl luminance::gl::shader::program::UniformInterface for #ident {
           fn uniform_interface(
-            builder: &mut luminance::shader::program::UniformBuilder,
+            builder: &mut luminance::gl::shader::program::UniformBuilder,
             _: ()
-          ) -> Result<Self, luminance::shader::program::ProgramError> {
+          ) -> Result<Self, luminance::gl::shader::program::ProgramError> {
             #(#field_decls)*
 
             let iface = #ident { #(#field_names,)* };

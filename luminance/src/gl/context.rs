@@ -31,8 +31,8 @@ use alloc::rc::Rc;
 #[cfg(not(feature = "std"))]
 use core::cell::RefCell;
 
-use crate::pipeline::Builder;
-use crate::state::GraphicsState;
+use crate::gl::pipeline::Builder;
+use crate::gl::state::GraphicsState;
 
 /// Class of graphics context.
 ///

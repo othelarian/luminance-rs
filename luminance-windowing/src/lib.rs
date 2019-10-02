@@ -28,9 +28,9 @@
 
 #![deny(missing_docs)]
 
-use luminance::context::GraphicsContext;
-use luminance::framebuffer::Framebuffer;
-use luminance::texture::{Dim2, Flat};
+use luminance::gl::context::GraphicsContext;
+use luminance::gl::framebuffer::Framebuffer;
+use luminance::gl::texture::{Dim2, Flat};
 
 /// Dimension metrics.
 ///

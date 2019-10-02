@@ -3,9 +3,9 @@
 //! Such a state controls how the GPU must operate some fixed pipeline functionality, such as the
 //! blending, depth test or face culling operations.
 
-use crate::blending::{Equation, Factor};
-use crate::depth_test::DepthComparison;
-use crate::face_culling::FaceCulling;
+use crate::gl::blending::{Equation, Factor};
+use crate::gl::depth_test::DepthComparison;
+use crate::gl::face_culling::FaceCulling;
 
 /// GPU render state.
 ///

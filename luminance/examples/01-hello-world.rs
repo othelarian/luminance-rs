@@ -8,10 +8,10 @@
 //!
 //! https://docs.rs/luminance
 
-use luminance::context::GraphicsContext as _;
-use luminance::render_state::RenderState;
-use luminance::shader::program::Program;
-use luminance::tess::{Mode, TessBuilder};
+use luminance::gl::context::GraphicsContext as _;
+use luminance::gl::render_state::RenderState;
+use luminance::gl::shader::program::Program;
+use luminance::gl::tess::{Mode, TessBuilder};
 use luminance_derive::{Semantics, Vertex};
 use luminance_glfw::{Action, GlfwSurface, Key, Surface, WindowEvent, WindowDim, WindowOpt};
 

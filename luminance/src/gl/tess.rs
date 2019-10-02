@@ -70,15 +70,15 @@ use core::ops::{Range, RangeFrom, RangeFull, RangeTo};
 #[cfg(not(feature = "std"))]
 use core::ptr;
 
-use crate::buffer::{Buffer, BufferError, BufferSlice, BufferSliceMut, RawBuffer};
-use crate::context::GraphicsContext;
 use crate::gl::*;
-use crate::state::{Bind, GraphicsState};
-use crate::vertex::{
+use crate::gl::buffer::{Buffer, BufferError, BufferSlice, BufferSliceMut, RawBuffer};
+use crate::gl::context::GraphicsContext;
+use crate::gl::state::{Bind, GraphicsState};
+use crate::gl::vertex::{
   Normalized, VertexBufferDesc, Vertex, VertexAttribDim, VertexAttribDesc, VertexAttribType,
   VertexDesc, VertexInstancing
 };
-use crate::vertex_restart::VertexRestart;
+use crate::gl::vertex_restart::VertexRestart;
 
 /// Vertices can be connected via several modes.
 ///

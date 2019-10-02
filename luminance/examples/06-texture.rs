@@ -11,14 +11,14 @@
 //!
 //! https://docs.rs/luminance
 
-use luminance::blending::{Equation, Factor};
-use luminance::context::GraphicsContext as _;
-use luminance::pipeline::BoundTexture;
-use luminance::pixel::{NormRGB8UI, NormUnsigned};
-use luminance::render_state::RenderState;
-use luminance::shader::program::{Program, Uniform};
-use luminance::tess::{Mode, TessBuilder};
-use luminance::texture::{Dim2, Flat, GenMipmaps, Sampler, Texture};
+use luminance::gl::blending::{Equation, Factor};
+use luminance::gl::context::GraphicsContext as _;
+use luminance::gl::pipeline::BoundTexture;
+use luminance::gl::pixel::{NormRGB8UI, NormUnsigned};
+use luminance::gl::render_state::RenderState;
+use luminance::gl::shader::program::{Program, Uniform};
+use luminance::gl::tess::{Mode, TessBuilder};
+use luminance::gl::texture::{Dim2, Flat, GenMipmaps, Sampler, Texture};
 use luminance_derive::UniformInterface;
 use luminance_glfw::{Action, GlfwSurface, Key, Surface, WindowEvent, WindowDim, WindowOpt};
 use std::env; // used to get the CLI arguments

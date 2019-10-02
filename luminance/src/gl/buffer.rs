@@ -128,10 +128,10 @@ use core::ptr;
 #[cfg(not(feature = "std"))]
 use core::slice;
 
-use crate::context::GraphicsContext;
-use crate::linear::{M22, M33, M44};
 use crate::gl::*;
-use crate::state::{Bind, GraphicsState};
+use crate::gl::context::GraphicsContext;
+use crate::gl::linear::{M22, M33, M44};
+use crate::gl::state::{Bind, GraphicsState};
 
 /// Buffer errors.
 #[derive(Debug, Eq, PartialEq)]

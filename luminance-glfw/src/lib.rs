@@ -5,9 +5,9 @@
 
 use gl;
 use glfw::{self, Context, CursorMode as GlfwCursorMode, SwapInterval, Window, WindowMode};
-use luminance::context::GraphicsContext;
-use luminance::state::GraphicsState;
-pub use luminance::state::StateQueryError;
+use luminance::gl::context::GraphicsContext;
+use luminance::gl::state::GraphicsState;
+pub use luminance::gl::state::StateQueryError;
 pub use luminance_windowing::{CursorMode, Surface, WindowDim, WindowOpt};
 use std::cell::RefCell;
 use std::fmt;

@@ -8,14 +8,14 @@
 mod common;
 
 use crate::common::{Semantics, Vertex, VertexPosition, VertexColor};
-use luminance::context::GraphicsContext as _;
-use luminance::framebuffer::Framebuffer;
-use luminance::pipeline::BoundTexture;
-use luminance::pixel::{RGBA32F, Floating};
-use luminance::render_state::RenderState;
-use luminance::shader::program::{BuiltProgram, Program, Uniform};
-use luminance::tess::{Mode, TessBuilder};
-use luminance::texture::{Dim2, Flat};
+use luminance::gl::context::GraphicsContext as _;
+use luminance::gl::framebuffer::Framebuffer;
+use luminance::gl::pipeline::BoundTexture;
+use luminance::gl::pixel::{RGBA32F, Floating};
+use luminance::gl::render_state::RenderState;
+use luminance::gl::shader::program::{BuiltProgram, Program, Uniform};
+use luminance::gl::tess::{Mode, TessBuilder};
+use luminance::gl::texture::{Dim2, Flat};
 use luminance_derive::UniformInterface;
 use luminance_glfw::{Action, GlfwSurface, Key, Surface, WindowEvent, WindowDim, WindowOpt};
 

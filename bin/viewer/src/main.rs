@@ -1,9 +1,9 @@
 use cgmath::{EuclideanSpace, Matrix4, Point3, Rad, Vector3, perspective};
-use luminance::context::GraphicsContext;
-use luminance::linear::M44;
-use luminance::render_state::RenderState;
-use luminance::shader::program::{Program, Uniform};
-use luminance::tess::{Mode, Tess, TessBuilder, TessError, TessSliceIndex};
+use luminance::gl::context::GraphicsContext;
+use luminance::gl::linear::M44;
+use luminance::gl::render_state::RenderState;
+use luminance::gl::shader::program::{Program, Uniform};
+use luminance::gl::tess::{Mode, Tess, TessBuilder, TessError, TessSliceIndex};
 use luminance_derive::{Semantics, UniformInterface, Vertex};
 use luminance_glfw::{Action, GlfwSurface, Key, Surface as _, WindowDim, WindowEvent, WindowOpt};
 use std::collections::HashMap;

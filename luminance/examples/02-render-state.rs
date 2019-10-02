@@ -12,11 +12,11 @@
 mod common;
 
 use crate::common::{Semantics, Vertex, VertexPosition, VertexColor};
-use luminance::blending::{Equation, Factor};
-use luminance::context::GraphicsContext as _;
-use luminance::render_state::RenderState;
-use luminance::shader::program::Program;
-use luminance::tess::{Mode, TessBuilder};
+use luminance::gl::blending::{Equation, Factor};
+use luminance::gl::context::GraphicsContext as _;
+use luminance::gl::render_state::RenderState;
+use luminance::gl::shader::program::Program;
+use luminance::gl::tess::{Mode, TessBuilder};
 use luminance_glfw::{Action, GlfwSurface, Key, Surface, WindowEvent, WindowDim, WindowOpt};
 
 const VS: &'static str = include_str!("simple-vs.glsl");
