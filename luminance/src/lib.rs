@@ -398,20 +398,29 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 #![cfg_attr(not(feature = "std"), feature(alloc))]
 
-#[cfg(feature = "gl")]
+// check for common setup mistakes
+#[cfg(all(feature = "std", feature = "opengl", not(feature = "gl")))]
+compile_error!("cannot compile with std without the gl crate");
+
+#[cfg(all(not(feature = "std"), feature = "opengl", feature = "gl"))]
+compile_error!("cannot compile with no_std and the gl crate at the same time");
+
+#[cfg(all(feature = "webgl", any(feature = "opengl", feature = "gl")))]
+compile_error!("cannot compile for web using OpenGL");
+
 pub mod gl;
 
-#[cfg(feature = "web")]
+#[cfg(feature = "webgl")]
 #[macro_use]
 extern crate serde_derive;
 
-#[cfg(feature = "web")]
+#[cfg(feature = "webgl")]
 #[macro_use]
 extern crate stdweb;
 
-#[cfg(feature = "web")]
+#[cfg(feature = "webgl")]
 #[macro_use]
 extern crate stdweb_derive;
 
-#[cfg(feature = "web")]
+#[cfg(feature = "webgl")]
 pub mod webgl;

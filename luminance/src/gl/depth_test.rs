@@ -1,6 +1,6 @@
 //! Depth test related features.
 
-use gl::types::*;
+#[cfg(feature = "opengl")] use crate::gl::*;
 
 /// Whether or not depth test should be enabled.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
@@ -34,7 +34,7 @@ pub enum DepthComparison {
 }
 
 impl DepthComparison {
-  #[cfg(feature = "gl")]
+  #[cfg(feature = "opengl")]
   pub(crate) fn to_glenum(self) -> GLenum {
     match self {
       DepthComparison::Never => gl::NEVER,

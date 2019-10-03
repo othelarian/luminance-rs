@@ -1,5 +1,5 @@
 fn main() {
-  #[cfg(feature = "web")]
+  #[cfg(feature = "webgl")]
   {
     use std::env;
     use std::fs::File;

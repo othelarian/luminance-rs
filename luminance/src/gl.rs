@@ -3,14 +3,18 @@
 //! This module provides OpenGL types and functions that are used to implement the rest of this
 //! crate.
 
-#[cfg(feature = "std")]
-mod meta {
+// The "opengl" feature selects the opengl module here. If "opengl" isn’t set, some modules are
+// still available for cross-GL use (WebGL, OpenGL ES, etc.) that don’t directly depend on the
+// backend technologies (mostly enums).
+
+#[cfg(all(feature = "std", feature = "opengl", feature = "gl"))]
+mod opengl {
   pub(crate) use gl;
   pub(crate) use gl::types::*;
 }
 
-#[cfg(not(feature = "std"))]
-mod meta {
+#[cfg(all(not(feature = "std"), feature = "opengl", not(feature = "gl")))]
+mod opengl {
   use alloc::vec::Vec;
 
   // types
@@ -774,20 +778,20 @@ mod meta {
 }
 
 pub mod blending;
-pub mod buffer;
-pub mod context;
+#[cfg(feature = "opengl")] pub mod buffer;
+#[cfg(feature = "opengl")] pub mod context;
 pub mod depth_test;
 pub mod face_culling;
-pub mod framebuffer;
+#[cfg(feature = "opengl")] pub mod framebuffer;
 pub mod linear;
-pub mod pipeline;
+#[cfg(feature = "opengl")] pub mod pipeline;
 pub mod pixel;
 pub mod render_state;
-pub mod shader;
-pub mod state;
-pub mod tess;
-pub mod texture;
+#[cfg(feature = "opengl")] pub mod shader;
+#[cfg(feature = "opengl")] pub mod state;
+#[cfg(feature = "opengl")] pub mod tess;
+#[cfg(feature = "opengl")] pub mod texture;
 pub mod vertex;
 pub mod vertex_restart;
 
-pub(crate) use self::meta::*;
+#[cfg(feature = "opengl")] pub(crate) use self::opengl::*;

@@ -111,7 +111,7 @@ use core::ptr;
 use crate::gl::*;
 use crate::gl::context::GraphicsContext;
 pub use crate::gl::depth_test::DepthComparison;
-use crate::gl::pixel::{opengl_pixel_format, Pixel, PixelFormat};
+use crate::gl::pixel::{Pixel, PixelFormat};
 use crate::gl::state::GraphicsState;
 
 /// How to wrap texture coordinates while sampling textures?
@@ -687,7 +687,7 @@ where L: Layerable,
   ) -> Vec<P::RawEncoding> where P: Pixel, P::RawEncoding: Copy + Default {
     let mut texels = Vec::new();
     let pf = P::pixel_format();
-    let (format, _, ty) = opengl_pixel_format(pf).unwrap();
+    let (format, _, ty) = pf.opengl_pixel_format().unwrap();
 
     unsafe {
       let mut w = 0;
@@ -774,7 +774,7 @@ where L: Layerable,
 fn create_texture_storage<L, D>(size: D::Size, mipmaps: usize, pf: PixelFormat) -> Result<(), TextureError>
 where L: Layerable,
       D: Dimensionable {
-  match opengl_pixel_format(pf) {
+  match pf.opengl_pixel_format() {
     Some(glf) => {
       let (format, iformat, encoding) = glf;
 
@@ -1089,7 +1089,7 @@ where L: Layerable,
   let skip_bytes = (D::width(size) as usize * pf_size) % 8;
   set_unpack_alignment(skip_bytes);
 
-  match opengl_pixel_format(pf) {
+  match pf.opengl_pixel_format() {
     Some((format, _, encoding)) => match L::layering() {
       Layering::Flat => match D::dim() {
         Dim::Dim1 => unsafe {
