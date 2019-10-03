@@ -408,6 +408,9 @@ compile_error!("cannot compile with no_std and the gl crate at the same time");
 #[cfg(all(feature = "webgl", any(feature = "opengl", feature = "gl")))]
 compile_error!("cannot compile for web using OpenGL");
 
+#[cfg(all(not(feature = "std"), feature = "webgl"))]
+compile_error!("cannot compile for web without std");
+
 pub mod gl;
 
 #[cfg(feature = "webgl")]
