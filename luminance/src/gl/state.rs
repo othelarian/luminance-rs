@@ -26,7 +26,7 @@ use crate::gl::vertex_restart::VertexRestart;
 //
 // Note: disable on no_std.
 #[cfg(feature = "std")]
-thread_local!(static TLS_ACQUIRE_GFX_STATE: RefCell<Option<()>> = RefCell::new(Some(())));
+thread_local!(pub(crate) static TLS_ACQUIRE_GFX_STATE: RefCell<Option<()>> = RefCell::new(Some(())));
 
 /// The graphics state.
 ///
@@ -79,7 +79,7 @@ pub struct GraphicsState {
 
 #[cfg(feature = "opengl")]
 impl GraphicsState {
-  /// Create a new `GraphicsState`.
+  /// Create a new [`GraphicsState`].
   ///
   /// > Note: keep in mind you can create only one per thread. However, if you’re building without
   /// > standard library, this function will always return successfully. You have to take extra care
@@ -108,7 +108,7 @@ impl GraphicsState {
   }
 
   /// Get a `GraphicsContext` from the current OpenGL context.
-  pub(crate) fn get_from_context() -> Result<Self, StateQueryError> {
+  fn get_from_context() -> Result<Self, StateQueryError> {
     unsafe {
       let blending_state = Self::get_ctx_blending_state()?;
       let blending_equation = Self::get_ctx_blending_equation()?;
