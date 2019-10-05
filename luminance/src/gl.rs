@@ -788,7 +788,7 @@ pub mod linear;
 pub mod pixel;
 pub mod render_state;
 #[cfg(feature = "opengl")] pub mod shader;
-#[cfg(feature = "opengl")] pub mod state;
+pub mod state;
 #[cfg(feature = "opengl")] pub mod tess;
 #[cfg(feature = "opengl")] pub mod texture;
 pub mod vertex;

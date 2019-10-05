@@ -14,7 +14,9 @@ use core::fmt;
 #[cfg(not(feature = "std"))]
 use core::marker::PhantomData;
 
-use crate::gl::*;
+#[cfg(feature = "opengl")] use crate::gl::*;
+#[cfg(feature = "webgl")] use crate::webgl::webgl::*;
+
 use crate::gl::blending::{BlendingState, Equation, Factor};
 use crate::gl::depth_test::{DepthComparison, DepthTest};
 use crate::gl::face_culling::{FaceCullingMode, FaceCullingOrder, FaceCullingState};
@@ -75,6 +77,7 @@ pub struct GraphicsState {
   current_program: GLuint,
 }
 
+#[cfg(feature = "opengl")]
 impl GraphicsState {
   /// Create a new `GraphicsState`.
   ///
@@ -107,23 +110,23 @@ impl GraphicsState {
   /// Get a `GraphicsContext` from the current OpenGL context.
   pub(crate) fn get_from_context() -> Result<Self, StateQueryError> {
     unsafe {
-      let blending_state = get_ctx_blending_state()?;
-      let blending_equation = get_ctx_blending_equation()?;
-      let blending_func = get_ctx_blending_factors()?;
-      let depth_test = get_ctx_depth_test()?;
+      let blending_state = Self::get_ctx_blending_state()?;
+      let blending_equation = Self::get_ctx_blending_equation()?;
+      let blending_func = Self::get_ctx_blending_factors()?;
+      let depth_test = Self::get_ctx_depth_test()?;
       let depth_test_comparison = DepthComparison::Less;
-      let face_culling_state = get_ctx_face_culling_state()?;
-      let face_culling_order = get_ctx_face_culling_order()?;
-      let face_culling_mode = get_ctx_face_culling_mode()?;
-      let vertex_restart = get_ctx_vertex_restart()?;
-      let current_texture_unit = get_ctx_current_texture_unit()?;
+      let face_culling_state = Self::get_ctx_face_culling_state()?;
+      let face_culling_order = Self::get_ctx_face_culling_order()?;
+      let face_culling_mode = Self::get_ctx_face_culling_mode()?;
+      let vertex_restart = Self::get_ctx_vertex_restart()?;
+      let current_texture_unit = Self::get_ctx_current_texture_unit()?;
       let bound_textures = vec![(gl::TEXTURE_2D, 0); 48]; // 48 is the platform minimal requirement
       let bound_uniform_buffers = vec![0; 36]; // 36 is the platform minimal requirement
       let bound_array_buffer = 0;
       let bound_element_array_buffer = 0;
-      let bound_draw_framebuffer = get_ctx_bound_draw_framebuffer()?;
-      let bound_vertex_array = get_ctx_bound_vertex_array()?;
-      let current_program = get_ctx_current_program()?;
+      let bound_draw_framebuffer = Self::get_ctx_bound_draw_framebuffer()?;
+      let bound_vertex_array = Self::get_ctx_bound_vertex_array()?;
+      let current_program = Self::get_ctx_current_program()?;
 
       Ok(GraphicsState {
         _a: PhantomData,
@@ -161,14 +164,14 @@ impl GraphicsState {
 
   pub(crate) unsafe fn set_blending_equation(&mut self, equation: Equation) {
     if self.blending_equation != equation {
-      gl::BlendEquation(from_blending_equation(equation));
+      gl::BlendEquation(Self::from_blending_equation(equation));
       self.blending_equation = equation;
     }
   }
 
   pub(crate) unsafe fn set_blending_func(&mut self, src: Factor, dest: Factor) {
     if self.blending_func != (src, dest) {
-      gl::BlendFunc(from_blending_factor(src), from_blending_factor(dest));
+      gl::BlendFunc(Self::from_blending_factor(src), Self::from_blending_factor(dest));
       self.blending_func = (src, dest);
     }
   }
@@ -334,6 +337,169 @@ impl GraphicsState {
       self.current_program = handle;
     }
   }
+
+  #[inline]
+  fn from_blending_equation(equation: Equation) -> GLenum {
+    match equation {
+      Equation::Additive => gl::FUNC_ADD,
+      Equation::Subtract => gl::FUNC_SUBTRACT,
+      Equation::ReverseSubtract => gl::FUNC_REVERSE_SUBTRACT,
+      Equation::Min => gl::MIN,
+      Equation::Max => gl::MAX,
+    }
+  }
+
+  #[inline]
+  fn from_blending_factor(factor: Factor) -> GLenum {
+    match factor {
+      Factor::One => gl::ONE,
+      Factor::Zero => gl::ZERO,
+      Factor::SrcColor => gl::SRC_COLOR,
+      Factor::SrcColorComplement => gl::ONE_MINUS_SRC_COLOR,
+      Factor::DestColor => gl::DST_COLOR,
+      Factor::DestColorComplement => gl::ONE_MINUS_DST_COLOR,
+      Factor::SrcAlpha => gl::SRC_ALPHA,
+      Factor::SrcAlphaComplement => gl::ONE_MINUS_SRC_ALPHA,
+      Factor::DstAlpha => gl::DST_ALPHA,
+      Factor::DstAlphaComplement => gl::ONE_MINUS_DST_ALPHA,
+      Factor::SrcAlphaSaturate => gl::SRC_ALPHA_SATURATE,
+    }
+  }
+
+  unsafe fn get_ctx_blending_state() -> Result<BlendingState, StateQueryError> {
+    let state = gl::IsEnabled(gl::BLEND);
+
+    match state {
+      gl::TRUE => Ok(BlendingState::On),
+      gl::FALSE => Ok(BlendingState::Off),
+      _ => Err(StateQueryError::UnknownBlendingState(state)),
+    }
+  }
+
+  unsafe fn get_ctx_blending_equation() -> Result<Equation, StateQueryError> {
+    let mut data = gl::FUNC_ADD as GLint;
+    gl::GetIntegerv(gl::BLEND_EQUATION_RGB, &mut data);
+
+    let data = data as GLenum;
+    match data {
+      gl::FUNC_ADD => Ok(Equation::Additive),
+      gl::FUNC_SUBTRACT => Ok(Equation::Subtract),
+      gl::FUNC_REVERSE_SUBTRACT => Ok(Equation::ReverseSubtract),
+      gl::MIN => Ok(Equation::Min),
+      gl::MAX => Ok(Equation::Max),
+      _ => Err(StateQueryError::UnknownBlendingEquation(data)),
+    }
+  }
+
+  unsafe fn get_ctx_blending_factors() -> Result<(Factor, Factor), StateQueryError> {
+    let mut src = gl::ONE as GLint;
+    let mut dst = gl::ZERO as GLint;
+
+    gl::GetIntegerv(gl::BLEND_SRC_RGB, &mut src);
+    gl::GetIntegerv(gl::BLEND_DST_RGB, &mut dst);
+
+    let src_k = Self::from_gl_blending_factor(src as GLenum).map_err(StateQueryError::UnknownBlendingSrcFactor)?;
+    let dst_k = Self::from_gl_blending_factor(dst as GLenum).map_err(StateQueryError::UnknownBlendingDstFactor)?;
+
+    Ok((src_k, dst_k))
+  }
+
+  #[inline]
+  fn from_gl_blending_factor(factor: GLenum) -> Result<Factor, GLenum> {
+    match factor {
+      gl::ONE => Ok(Factor::One),
+      gl::ZERO => Ok(Factor::Zero),
+      gl::SRC_COLOR => Ok(Factor::SrcColor),
+      gl::ONE_MINUS_SRC_COLOR => Ok(Factor::SrcColorComplement),
+      gl::DST_COLOR => Ok(Factor::DestColor),
+      gl::ONE_MINUS_DST_COLOR => Ok(Factor::DestColorComplement),
+      gl::SRC_ALPHA => Ok(Factor::SrcAlpha),
+      gl::ONE_MINUS_SRC_ALPHA => Ok(Factor::SrcAlphaComplement),
+      gl::DST_ALPHA => Ok(Factor::DstAlpha),
+      gl::ONE_MINUS_DST_ALPHA => Ok(Factor::DstAlphaComplement),
+      gl::SRC_ALPHA_SATURATE => Ok(Factor::SrcAlphaSaturate),
+      _ => Err(factor),
+    }
+  }
+
+  unsafe fn get_ctx_depth_test() -> Result<DepthTest, StateQueryError> {
+    let state = gl::IsEnabled(gl::DEPTH_TEST);
+
+    match state {
+      gl::TRUE => Ok(DepthTest::On),
+      gl::FALSE => Ok(DepthTest::Off),
+      _ => Err(StateQueryError::UnknownDepthTestState(state)),
+    }
+  }
+
+  unsafe fn get_ctx_face_culling_state() -> Result<FaceCullingState, StateQueryError> {
+    let state = gl::IsEnabled(gl::CULL_FACE);
+
+    match state {
+      gl::TRUE => Ok(FaceCullingState::On),
+      gl::FALSE => Ok(FaceCullingState::Off),
+      _ => Err(StateQueryError::UnknownFaceCullingState(state)),
+    }
+  }
+
+  unsafe fn get_ctx_face_culling_order() -> Result<FaceCullingOrder, StateQueryError> {
+    let mut order = gl::CCW as GLint;
+    gl::GetIntegerv(gl::FRONT_FACE, &mut order);
+
+    let order = order as GLenum;
+    match order {
+      gl::CCW => Ok(FaceCullingOrder::CCW),
+      gl::CW => Ok(FaceCullingOrder::CW),
+      _ => Err(StateQueryError::UnknownFaceCullingOrder(order)),
+    }
+  }
+
+  unsafe fn get_ctx_face_culling_mode() -> Result<FaceCullingMode, StateQueryError> {
+    let mut mode = gl::BACK as GLint;
+    gl::GetIntegerv(gl::CULL_FACE_MODE, &mut mode);
+
+    let mode = mode as GLenum;
+    match mode {
+      gl::FRONT => Ok(FaceCullingMode::Front),
+      gl::BACK => Ok(FaceCullingMode::Back),
+      gl::FRONT_AND_BACK => Ok(FaceCullingMode::Both),
+      _ => Err(StateQueryError::UnknownFaceCullingMode(mode)),
+    }
+  }
+
+  unsafe fn get_ctx_vertex_restart() -> Result<VertexRestart, StateQueryError> {
+    let state = gl::IsEnabled(gl::PRIMITIVE_RESTART);
+
+    match state {
+      gl::TRUE => Ok(VertexRestart::On),
+      gl::FALSE => Ok(VertexRestart::Off),
+      _ => Err(StateQueryError::UnknownVertexRestartState(state)),
+    }
+  }
+
+  unsafe fn get_ctx_current_texture_unit() -> Result<GLenum, StateQueryError> {
+    let mut active_texture = gl::TEXTURE0 as GLint;
+    gl::GetIntegerv(gl::ACTIVE_TEXTURE, &mut active_texture);
+    Ok(active_texture as GLenum)
+  }
+
+  unsafe fn get_ctx_bound_draw_framebuffer() -> Result<GLuint, StateQueryError> {
+    let mut bound = 0 as GLint;
+    gl::GetIntegerv(gl::DRAW_FRAMEBUFFER_BINDING, &mut bound);
+    Ok(bound as GLuint)
+  }
+
+  unsafe fn get_ctx_bound_vertex_array() -> Result<GLuint, StateQueryError> {
+    let mut bound = 0 as GLint;
+    gl::GetIntegerv(gl::VERTEX_ARRAY_BINDING, &mut bound);
+    Ok(bound as GLuint)
+  }
+
+  unsafe fn get_ctx_current_program() -> Result<GLuint, StateQueryError> {
+    let mut used = 0 as GLint;
+    gl::GetIntegerv(gl::CURRENT_PROGRAM, &mut used);
+    Ok(used as GLuint)
+  }
 }
 
 /// Should the binding be cached or forced to the provided value?
@@ -341,34 +507,6 @@ impl GraphicsState {
 pub(crate) enum Bind {
   Forced,
   Cached
-}
-
-#[inline]
-fn from_blending_equation(equation: Equation) -> GLenum {
-  match equation {
-    Equation::Additive => gl::FUNC_ADD,
-    Equation::Subtract => gl::FUNC_SUBTRACT,
-    Equation::ReverseSubtract => gl::FUNC_REVERSE_SUBTRACT,
-    Equation::Min => gl::MIN,
-    Equation::Max => gl::MAX,
-  }
-}
-
-#[inline]
-fn from_blending_factor(factor: Factor) -> GLenum {
-  match factor {
-    Factor::One => gl::ONE,
-    Factor::Zero => gl::ZERO,
-    Factor::SrcColor => gl::SRC_COLOR,
-    Factor::SrcColorComplement => gl::ONE_MINUS_SRC_COLOR,
-    Factor::DestColor => gl::DST_COLOR,
-    Factor::DestColorComplement => gl::ONE_MINUS_DST_COLOR,
-    Factor::SrcAlpha => gl::SRC_ALPHA,
-    Factor::SrcAlphaComplement => gl::ONE_MINUS_SRC_ALPHA,
-    Factor::DstAlpha => gl::DST_ALPHA,
-    Factor::DstAlphaComplement => gl::ONE_MINUS_DST_ALPHA,
-    Factor::SrcAlphaSaturate => gl::SRC_ALPHA_SATURATE,
-  }
 }
 
 /// An error that might happen when the context is queried.
@@ -416,139 +554,4 @@ impl fmt::Display for StateQueryError {
       StateQueryError::UnknownVertexRestartState(ref s) => write!(f, "unknown vertex restart state: {}", s),
     }
   }
-}
-
-unsafe fn get_ctx_blending_state() -> Result<BlendingState, StateQueryError> {
-  let state = gl::IsEnabled(gl::BLEND);
-
-  match state {
-    gl::TRUE => Ok(BlendingState::On),
-    gl::FALSE => Ok(BlendingState::Off),
-    _ => Err(StateQueryError::UnknownBlendingState(state)),
-  }
-}
-
-unsafe fn get_ctx_blending_equation() -> Result<Equation, StateQueryError> {
-  let mut data = gl::FUNC_ADD as GLint;
-  gl::GetIntegerv(gl::BLEND_EQUATION_RGB, &mut data);
-
-  let data = data as GLenum;
-  match data {
-    gl::FUNC_ADD => Ok(Equation::Additive),
-    gl::FUNC_SUBTRACT => Ok(Equation::Subtract),
-    gl::FUNC_REVERSE_SUBTRACT => Ok(Equation::ReverseSubtract),
-    gl::MIN => Ok(Equation::Min),
-    gl::MAX => Ok(Equation::Max),
-    _ => Err(StateQueryError::UnknownBlendingEquation(data)),
-  }
-}
-
-unsafe fn get_ctx_blending_factors() -> Result<(Factor, Factor), StateQueryError> {
-  let mut src = gl::ONE as GLint;
-  let mut dst = gl::ZERO as GLint;
-
-  gl::GetIntegerv(gl::BLEND_SRC_RGB, &mut src);
-  gl::GetIntegerv(gl::BLEND_DST_RGB, &mut dst);
-
-  let src_k = from_gl_blending_factor(src as GLenum).map_err(StateQueryError::UnknownBlendingSrcFactor)?;
-  let dst_k = from_gl_blending_factor(dst as GLenum).map_err(StateQueryError::UnknownBlendingDstFactor)?;
-
-  Ok((src_k, dst_k))
-}
-
-#[inline]
-fn from_gl_blending_factor(factor: GLenum) -> Result<Factor, GLenum> {
-  match factor {
-    gl::ONE => Ok(Factor::One),
-    gl::ZERO => Ok(Factor::Zero),
-    gl::SRC_COLOR => Ok(Factor::SrcColor),
-    gl::ONE_MINUS_SRC_COLOR => Ok(Factor::SrcColorComplement),
-    gl::DST_COLOR => Ok(Factor::DestColor),
-    gl::ONE_MINUS_DST_COLOR => Ok(Factor::DestColorComplement),
-    gl::SRC_ALPHA => Ok(Factor::SrcAlpha),
-    gl::ONE_MINUS_SRC_ALPHA => Ok(Factor::SrcAlphaComplement),
-    gl::DST_ALPHA => Ok(Factor::DstAlpha),
-    gl::ONE_MINUS_DST_ALPHA => Ok(Factor::DstAlphaComplement),
-    gl::SRC_ALPHA_SATURATE => Ok(Factor::SrcAlphaSaturate),
-    _ => Err(factor),
-  }
-}
-
-unsafe fn get_ctx_depth_test() -> Result<DepthTest, StateQueryError> {
-  let state = gl::IsEnabled(gl::DEPTH_TEST);
-
-  match state {
-    gl::TRUE => Ok(DepthTest::On),
-    gl::FALSE => Ok(DepthTest::Off),
-    _ => Err(StateQueryError::UnknownDepthTestState(state)),
-  }
-}
-
-unsafe fn get_ctx_face_culling_state() -> Result<FaceCullingState, StateQueryError> {
-  let state = gl::IsEnabled(gl::CULL_FACE);
-
-  match state {
-    gl::TRUE => Ok(FaceCullingState::On),
-    gl::FALSE => Ok(FaceCullingState::Off),
-    _ => Err(StateQueryError::UnknownFaceCullingState(state)),
-  }
-}
-
-unsafe fn get_ctx_face_culling_order() -> Result<FaceCullingOrder, StateQueryError> {
-  let mut order = gl::CCW as GLint;
-  gl::GetIntegerv(gl::FRONT_FACE, &mut order);
-
-  let order = order as GLenum;
-  match order {
-    gl::CCW => Ok(FaceCullingOrder::CCW),
-    gl::CW => Ok(FaceCullingOrder::CW),
-    _ => Err(StateQueryError::UnknownFaceCullingOrder(order)),
-  }
-}
-
-unsafe fn get_ctx_face_culling_mode() -> Result<FaceCullingMode, StateQueryError> {
-  let mut mode = gl::BACK as GLint;
-  gl::GetIntegerv(gl::CULL_FACE_MODE, &mut mode);
-
-  let mode = mode as GLenum;
-  match mode {
-    gl::FRONT => Ok(FaceCullingMode::Front),
-    gl::BACK => Ok(FaceCullingMode::Back),
-    gl::FRONT_AND_BACK => Ok(FaceCullingMode::Both),
-    _ => Err(StateQueryError::UnknownFaceCullingMode(mode)),
-  }
-}
-
-unsafe fn get_ctx_vertex_restart() -> Result<VertexRestart, StateQueryError> {
-  let state = gl::IsEnabled(gl::PRIMITIVE_RESTART);
-
-  match state {
-    gl::TRUE => Ok(VertexRestart::On),
-    gl::FALSE => Ok(VertexRestart::Off),
-    _ => Err(StateQueryError::UnknownVertexRestartState(state)),
-  }
-}
-
-unsafe fn get_ctx_current_texture_unit() -> Result<GLenum, StateQueryError> {
-  let mut active_texture = gl::TEXTURE0 as GLint;
-  gl::GetIntegerv(gl::ACTIVE_TEXTURE, &mut active_texture);
-  Ok(active_texture as GLenum)
-}
-
-unsafe fn get_ctx_bound_draw_framebuffer() -> Result<GLuint, StateQueryError> {
-  let mut bound = 0 as GLint;
-  gl::GetIntegerv(gl::DRAW_FRAMEBUFFER_BINDING, &mut bound);
-  Ok(bound as GLuint)
-}
-
-unsafe fn get_ctx_bound_vertex_array() -> Result<GLuint, StateQueryError> {
-  let mut bound = 0 as GLint;
-  gl::GetIntegerv(gl::VERTEX_ARRAY_BINDING, &mut bound);
-  Ok(bound as GLuint)
-}
-
-unsafe fn get_ctx_current_program() -> Result<GLuint, StateQueryError> {
-  let mut used = 0 as GLint;
-  gl::GetIntegerv(gl::CURRENT_PROGRAM, &mut used);
-  Ok(used as GLuint)
 }
