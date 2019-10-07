@@ -35,46 +35,46 @@ thread_local!(pub(crate) static TLS_ACQUIRE_GFX_STATE: RefCell<Option<()>> = Ref
 /// adds a small cache layer over it to prevent from issuing the same API call (with
 /// the same parameters).
 pub struct GraphicsState {
-  _a: PhantomData<*const ()>, // !Send and !Sync
+  pub(crate) _a: PhantomData<*const ()>, // !Send and !Sync
 
   // blending
-  blending_state: BlendingState,
-  blending_equation: Equation,
-  blending_func: (Factor, Factor),
+  pub(crate) blending_state: BlendingState,
+  pub(crate) blending_equation: Equation,
+  pub(crate) blending_func: (Factor, Factor),
 
   // depth test
-  depth_test: DepthTest,
-  depth_test_comparison: DepthComparison,
+  pub(crate) depth_test: DepthTest,
+  pub(crate) depth_test_comparison: DepthComparison,
 
   // face culling
-  face_culling_state: FaceCullingState,
-  face_culling_order: FaceCullingOrder,
-  face_culling_mode: FaceCullingMode,
+  pub(crate) face_culling_state: FaceCullingState,
+  pub(crate) face_culling_order: FaceCullingOrder,
+  pub(crate) face_culling_mode: FaceCullingMode,
 
   // vertex restart
-  vertex_restart: VertexRestart,
+  pub(crate) vertex_restart: VertexRestart,
 
   // texture
-  current_texture_unit: GLenum,
-  bound_textures: Vec<(GLenum, GLuint)>,
+  pub(crate) current_texture_unit: GLenum,
+  pub(crate) bound_textures: Vec<(GLenum, GLuint)>,
 
   // uniform buffer
-  bound_uniform_buffers: Vec<GLuint>,
+  pub(crate) bound_uniform_buffers: Vec<GLuint>,
 
   // array buffer
-  bound_array_buffer: GLuint,
+  pub(crate) bound_array_buffer: GLuint,
 
   // element buffer
-  bound_element_array_buffer: GLuint,
+  pub(crate) bound_element_array_buffer: GLuint,
 
   // framebuffer
-  bound_draw_framebuffer: GLuint,
+  pub(crate) bound_draw_framebuffer: GLuint,
 
   // vertex array
-  bound_vertex_array: GLuint,
+  pub(crate) bound_vertex_array: GLuint,
 
   // shader program
-  current_program: GLuint,
+  pub(crate) current_program: GLuint,
 }
 
 #[cfg(feature = "opengl")]
