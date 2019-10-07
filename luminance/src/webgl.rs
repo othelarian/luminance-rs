@@ -8,6 +8,7 @@ pub mod webgl {
   include!(concat!(env!("OUT_DIR"), "/webgl_stdweb.rs"));
 }
 
+pub mod context;
 pub mod state;
 
 pub use crate::gl::blending;
