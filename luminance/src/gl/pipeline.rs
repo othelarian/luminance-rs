@@ -202,13 +202,12 @@ impl<'a, C> Builder<'a, C> where C: ?Sized + GraphicsContext {
         DS: DepthSlot<L, D>,
         F: FnOnce(Pipeline<'b>, ShadingGate<'b, C>) {
     unsafe {
-      self.ctx.state()
-        .borrow_mut()
-        .bind_draw_framebuffer(framebuffer.handle());
+      let mut state = self.ctx.state().borrow_mut();
 
-      gl::Viewport(0, 0, framebuffer.width() as GLint, framebuffer.height() as GLint);
-      gl::ClearColor(clear_color[0], clear_color[1], clear_color[2], clear_color[3]);
-      gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
+      state.bind_draw_framebuffer(framebuffer.handle());
+      state.set_viewport(0, 0, framebuffer.width() as GLint, framebuffer.height() as GLint);
+      state.clear_color(clear_color[0], clear_color[1], clear_color[2], clear_color[3]);
+      state.clear_buffers();
     }
 
     let binding_stack = &self.binding_stack;

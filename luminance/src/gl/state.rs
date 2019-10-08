@@ -338,6 +338,18 @@ impl GraphicsState {
     }
   }
 
+  pub(crate) unsafe fn set_viewport(&mut self, x: GLint, y: GLint, w: GLint, h: GLint) {
+    gl::Viewport(x as GLint, y as GLint, w as GLint, h as GLint);
+  }
+
+  pub(crate) unsafe fn clear_color(&mut self, r: GLfloat, g: GLfloat, b: GLfloat, a: GLfloat) {
+    gl::ClearColor(r, g, b, a);
+  }
+
+  pub(crate) unsafe fn clear_buffers(&mut self) {
+    gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
+  }
+
   #[inline]
   fn from_blending_equation(equation: Equation) -> GLenum {
     match equation {
