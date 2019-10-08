@@ -32,3 +32,8 @@ stdweb-derive = { version = "0.5", optional = true }
 [build-dependencies]
 webgl_generator = { version = "0.2", optional = true }
 
+[dev-dependencies]
+luminance-derive = "0.6"
+luminance-windowing = "0.9"
+luminance-glfw = "0.12"
+luminance-glutin = "0.7"
