@@ -3,10 +3,12 @@
 //! This module provides WebGL types and functions that are used to implement the rest of this
 //! crate.
 
-pub mod webgl {
+pub(crate) mod webgl {
   #![allow(missing_docs, unused_parens, non_camel_case_types, warnings)]
   include!(concat!(env!("OUT_DIR"), "/webgl_stdweb.rs"));
 }
+
+pub(crate) use self::webgl::*;
 
 pub mod context;
 pub mod state;

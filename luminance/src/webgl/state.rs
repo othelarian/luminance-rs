@@ -9,7 +9,7 @@ use crate::gl::face_culling::{FaceCullingMode, FaceCullingOrder, FaceCullingStat
 use crate::gl::vertex_restart::VertexRestart;
 pub use crate::gl::state::{GraphicsState, StateQueryError};
 use crate::gl::state::TLS_ACQUIRE_GFX_STATE;
-use crate::webgl::webgl::*;
+use crate::webgl::*;
 
 impl GraphicsState {
   /// Create a new [`GraphicsState`].

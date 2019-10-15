@@ -20,3 +20,28 @@
 //! That last property might seem to be a drawback to you but is required to remove a lot of
 //! dynamic branches in the implementation and reduce the number of required safety
 //! checks – enforced at compile time instead.
+
+use std::cell::RefCell;
+use std::rc::Rc;
+
+use crate::webgl::state::GraphicsState;
+
+/// Class of graphics context.
+///
+/// Such a context must not be Send nor Sync, which means that you cannot share it between
+/// threads in any way (move / borrow).
+pub unsafe trait GraphicsContext {
+  /// Get access to the graphics state of this context.
+  ///
+  /// This must return a `Rc<RefCell<GraphicsState>>` because the state will be shared by OpenGL
+  /// objects to ensure consistency with its state.
+  fn state(&self) -> &Rc<RefCell<GraphicsState>>;
+
+  /// Create a new pipeline builder.
+  ///
+  /// A pipeline builder is the only way to create new pipelines and issue draws. Feel free to dig
+  /// in the documentation of `Builder` for further details.
+  fn pipeline_builder(&mut self) -> Builder<Self> {
+    Builder::new(self)
+  }
+}
