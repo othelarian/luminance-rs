@@ -54,7 +54,7 @@ use core::ops::Deref;
 #[cfg(not(feature = "std"))]
 use core::ptr::null_mut;
 
-use crate::gl::*;
+use crate::gl::{self, *};
 use crate::gl::linear::{M22, M33, M44};
 use crate::gl::shader::stage::{self, Stage, StageError};
 use crate::gl::vertex::Semantics;

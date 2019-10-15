@@ -9,7 +9,7 @@
 
 #[cfg(all(feature = "std", feature = "opengl", feature = "gl"))]
 mod opengl {
-  pub(crate) use gl;
+  pub(crate) use gl::*;
   pub(crate) use gl::types::*;
 }
 

@@ -108,7 +108,7 @@ use core::ops::{Deref, DerefMut};
 #[cfg(not(feature = "std"))]
 use core::ptr;
 
-use crate::gl::*;
+use crate::gl::{self, *};
 use crate::gl::context::GraphicsContext;
 pub use crate::gl::depth_test::DepthComparison;
 use crate::gl::pixel::{Pixel, PixelFormat};

@@ -14,7 +14,7 @@ use core::fmt;
 #[cfg(not(feature = "std"))]
 use core::marker::PhantomData;
 
-#[cfg(feature = "opengl")] use crate::gl::*;
+#[cfg(feature = "opengl")] use crate::gl::{self, *};
 #[cfg(feature = "webgl")] use crate::webgl::webgl::*;
 
 use crate::gl::blending::{BlendingState, Equation, Factor};

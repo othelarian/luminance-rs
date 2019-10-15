@@ -21,7 +21,7 @@ use core::fmt;
 #[cfg(not(feature = "std"))]
 use core::ptr::{null, null_mut};
 
-use crate::gl::*;
+use crate::gl::{self, *};
 
 /// A shader stage type.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]

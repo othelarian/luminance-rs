@@ -115,7 +115,7 @@ use core::marker::PhantomData;
 #[cfg(not(feature = "std"))]
 use core::ops::Deref;
 
-use crate::gl::*;
+use crate::gl::{self, *};
 use crate::gl::blending::BlendingState;
 use crate::gl::buffer::{Buffer, RawBuffer};
 use crate::gl::context::GraphicsContext;

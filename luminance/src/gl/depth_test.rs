@@ -1,6 +1,6 @@
 //! Depth test related features.
 
-#[cfg(feature = "opengl")] use crate::gl::*;
+#[cfg(feature = "opengl")] use crate::gl::{self, *};
 
 /// Whether or not depth test should be enabled.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]

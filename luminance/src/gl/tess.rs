@@ -70,7 +70,7 @@ use core::ops::{Range, RangeFrom, RangeFull, RangeTo};
 #[cfg(not(feature = "std"))]
 use core::ptr;
 
-use crate::gl::*;
+use crate::gl::{self, *};
 use crate::gl::buffer::{Buffer, BufferError, BufferSlice, BufferSliceMut, RawBuffer};
 use crate::gl::context::GraphicsContext;
 use crate::gl::state::{Bind, GraphicsState};

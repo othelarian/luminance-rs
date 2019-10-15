@@ -128,7 +128,7 @@ use core::ptr;
 #[cfg(not(feature = "std"))]
 use core::slice;
 
-use crate::gl::*;
+use crate::gl::{self, *};
 use crate::gl::context::GraphicsContext;
 use crate::gl::linear::{M22, M33, M44};
 use crate::gl::state::{Bind, GraphicsState};
