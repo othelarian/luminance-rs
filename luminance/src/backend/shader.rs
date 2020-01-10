@@ -8,12 +8,12 @@ use crate::vertex::Semantics;
 /// A shader stage type.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum StageType {
+  /// Vertex shader.
+  VertexShader,
   /// Tessellation control shader.
   TessellationControlShader,
   /// Tessellation evaluation shader.
   TessellationEvaluationShader,
-  /// Vertex shader.
-  VertexShader,
   /// Geometry shader.
   GeometryShader,
   /// Fragment shader.
@@ -23,9 +23,9 @@ pub enum StageType {
 impl fmt::Display for StageType {
   fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
     match *self {
+      StageType::VertexShader => f.write_str("vertex shader"),
       StageType::TessellationControlShader => f.write_str("tessellation control shader"),
       StageType::TessellationEvaluationShader => f.write_str("tessellation evaluation shader"),
-      StageType::VertexShader => f.write_str("vertex shader"),
       StageType::GeometryShader => f.write_str("geometry shader"),
       StageType::FragmentShader => f.write_str("fragment shader"),
     }
@@ -51,7 +51,16 @@ impl fmt::Display for StageError {
   }
 }
 
-pub struct TessellationStages<'a, S> {
+impl From<StageError> for ProgramError {
+  fn from(e: StageError) -> Self {
+    ProgramError::StageError(e)
+  }
+}
+
+pub struct TessellationStages<'a, S>
+where
+  S: ?Sized,
+{
   pub control: &'a S,
   pub evaluation: &'a S,
 }
@@ -118,6 +127,12 @@ impl fmt::Display for ProgramWarning {
       ProgramWarning::Uniform(ref e) => write!(f, "uniform warning: {}", e),
       ProgramWarning::VertexAttrib(ref e) => write!(f, "vertex attribute warning: {}", e),
     }
+  }
+}
+
+impl From<ProgramWarning> for ProgramError {
+  fn from(e: ProgramWarning) -> Self {
+    ProgramError::Warning(e)
   }
 }
 
