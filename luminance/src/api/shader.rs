@@ -138,6 +138,10 @@ impl<S, Sem, Out, Uni> AdaptationFailure<S, Sem, Out, Uni>
 where
   S: Shader,
 {
+  pub(crate) fn new(program: Program<S, Sem, Out, Uni>, error: ProgramError) -> Self {
+    AdaptationFailure { program, error }
+  }
+
   /// Get the program and ignore the error.
   pub fn ignore_error(self) -> Program<S, Sem, Out, Uni> {
     self.program
@@ -198,7 +202,7 @@ where
 
       let warnings = S::apply_semantics::<Sem>(&mut repr)?
         .into_iter()
-        .map(|w| ProgramError::Warning(ProgramWarning::VertexAttrib(w)))
+        .map(|w| ProgramError::Warning(w.into()))
         .collect();
 
       let mut uniform_builder: UniformBuilder<S> =
@@ -207,8 +211,9 @@ where
           warnings: Vec::new(),
           _a: PhantomData,
         })?;
-      let uni = Uni::uniform_interface(&mut uniform_builder, env)
-        .map_err(|w| ProgramWarning::Uniform(w))?;
+
+      let uni =
+        Uni::uniform_interface(&mut uniform_builder, env).map_err(ProgramWarning::Uniform)?;
 
       let program = Program {
         repr,
@@ -290,5 +295,58 @@ where
       &fs_stage,
       env,
     )
+  }
+
+  pub fn from_strings<'a, C, V, T, G, F>(
+    ctx: &mut C,
+    vertex: V,
+    tess: T,
+    geometry: G,
+    fragment: F,
+  ) -> Result<BuiltProgram<S, Sem, Out, Uni>, ProgramError>
+  where
+    C: GraphicsContext<Backend = S>,
+    Uni: UniformInterface,
+    V: AsRef<str> + 'a,
+    T: Into<Option<TessellationStages<'a, str>>>,
+    G: Into<Option<&'a str>>,
+    F: AsRef<str> + 'a,
+  {
+    Self::from_strings_env(ctx, vertex, tess, geometry, fragment, &mut ())
+  }
+
+  pub fn adapt_env<Q, E>(
+    mut self,
+    env: &mut E,
+  ) -> Result<BuiltProgram<S, Sem, Out, Q>, AdaptationFailure<S, Sem, Out, Uni>>
+  where
+    Q: UniformInterface<E>,
+  {
+    // first, try to create the new uniform interface
+    let mut uniform_builder: UniformBuilder<S> = S::new_uniform_builder(&mut self.repr)
+      .map(|repr| UniformBuilder {
+        repr,
+        warnings: Vec::new(),
+        _a: PhantomData,
+      })
+      .map_err(|e| AdaptationFailure::new(self, e))?;
+
+    let uni = Q::uniform_interface(&mut uniform_builder, env)
+      .map_err(|e| AdaptationFailure::new(self, ProgramWarning::Uniform(e).into()))?;
+
+    let warnings = uniform_builder
+      .warnings
+      .into_iter()
+      .map(|w| ProgramError::Warning(w.into()))
+      .collect();
+
+    let program = Program {
+      repr: self.repr,
+      uni,
+      _sem: PhantomData,
+      _out: PhantomData,
+    };
+
+    Ok(BuiltProgram { program, warnings })
   }
 }

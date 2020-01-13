@@ -87,30 +87,6 @@ impl fmt::Display for ProgramError {
   }
 }
 
-/// Warnings related to uniform issues.
-#[derive(Debug)]
-pub enum UniformWarning {
-  /// Inactive uniform (not in use / no participation to the final output in shaders).
-  Inactive(String),
-  /// Type mismatch between the static requested type (i.e. the `T` in [`Uniform<T>`] for instance)
-  /// and the type that got reflected from the backend in the shaders.
-  ///
-  /// The first `String` is the name of the uniform; the second one gives the type mismatch.
-  TypeMismatch(String, StageType),
-}
-
-impl fmt::Display for UniformWarning {
-  fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
-    match *self {
-      UniformWarning::Inactive(ref s) => write!(f, "inactive {} uniform", s),
-
-      UniformWarning::TypeMismatch(ref n, ref t) => {
-        write!(f, "type mismatch for uniform {}: {}", n, t)
-      }
-    }
-  }
-}
-
 /// Program warnings, not necessarily considered blocking errors.
 #[derive(Debug)]
 pub enum ProgramWarning {
@@ -136,6 +112,36 @@ impl From<ProgramWarning> for ProgramError {
   }
 }
 
+/// Warnings related to uniform issues.
+#[derive(Debug)]
+pub enum UniformWarning {
+  /// Inactive uniform (not in use / no participation to the final output in shaders).
+  Inactive(String),
+  /// Type mismatch between the static requested type (i.e. the `T` in [`Uniform<T>`] for instance)
+  /// and the type that got reflected from the backend in the shaders.
+  ///
+  /// The first `String` is the name of the uniform; the second one gives the type mismatch.
+  TypeMismatch(String, StageType),
+}
+
+impl fmt::Display for UniformWarning {
+  fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
+    match *self {
+      UniformWarning::Inactive(ref s) => write!(f, "inactive {} uniform", s),
+
+      UniformWarning::TypeMismatch(ref n, ref t) => {
+        write!(f, "type mismatch for uniform {}: {}", n, t)
+      }
+    }
+  }
+}
+
+impl From<UniformWarning> for ProgramWarning {
+  fn from(e: UniformWarning) -> Self {
+    ProgramWarning::Uniform(e)
+  }
+}
+
 /// Warnings related to vertex attributes issues.
 #[derive(Debug)]
 pub enum VertexAttribWarning {
@@ -148,6 +154,12 @@ impl fmt::Display for VertexAttribWarning {
     match *self {
       VertexAttribWarning::Inactive(ref s) => write!(f, "inactive {} vertex attribute", s),
     }
+  }
+}
+
+impl From<VertexAttribWarning> for ProgramWarning {
+  fn from(e: VertexAttribWarning) -> Self {
+    ProgramWarning::VertexAttrib(e)
   }
 }
 
