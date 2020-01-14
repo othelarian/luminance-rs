@@ -116,6 +116,14 @@ impl GraphicsState {
     }
   }
 
+  /// Help swap from an opengl context to another
+  /// 
+  /// Note: currently it only run the same code as in new() method, but with no-std mode
+  #[cfg(feature = "std")]
+  pub fn swap_multi() -> Result<Self, StateQueryError> {
+    Self::get_from_context()
+  }
+
   /// Get a `GraphicsContext` from the current OpenGL context.
   pub(crate) fn get_from_context() -> Result<Self, StateQueryError> {
     unsafe {
