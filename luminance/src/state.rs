@@ -118,9 +118,13 @@ impl GraphicsState {
 
   /// Help swap from an opengl context to another
   /// 
-  /// Note: currently it only run the same code as in new() method, but with no-std mode
+  /// Note: currently it only run the same code as in new() method, but without the check
+  /// to the TLS to be sure that only one context exist in the thread
+  /// WARNING : you can use this method to bypass the new() unique context security, but
+  /// it's a really bad idea, please consider this method as an advanced feature and use it
+  /// with caution.
   #[cfg(feature = "std")]
-  pub fn swap_multi() -> Result<Self, StateQueryError> {
+  pub fn new_multi() -> Result<Self, StateQueryError> {
     Self::get_from_context()
   }
 
