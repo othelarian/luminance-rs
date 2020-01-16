@@ -19,7 +19,7 @@ maintenance = { status = "actively-developed" }
 default = ["std"]
 std = ["gl"]
 
-multiwin = []
+multi-contexts = []
 
 [dependencies.gl]
 version = "0.14"

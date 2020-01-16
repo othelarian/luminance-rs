@@ -123,8 +123,8 @@ impl GraphicsState {
   /// WARNING : you can use this method to bypass the new() unique context security, but
   /// it's a really bad idea, please consider this method as an advanced feature and use it
   /// with caution.
-  #[cfg(feature = "multiwin")]
-  pub fn new_multi() -> Result<Self, StateQueryError> {
+  #[cfg(feature = "multi-contexts")]
+  pub unsafe fn new_multi_contexts() -> Result<Self, StateQueryError> {
     Self::get_from_context()
   }
 
